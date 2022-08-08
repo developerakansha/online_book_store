@@ -42,7 +42,7 @@ public class BookStoreServiceImpl implements BookStoreService{
 	@Override
 	public ResponseDto totalAmountForBooks(TotalAmountRequestDto request) {
 		List<BookStoreEntity> list = null;
-		list = bookStoreRepository.findByISBNCode(request.getIsbn());
+		list = null;//bookStoreRepository.findByISBNCode(request.getIsbn());
 		int discount = 0;
 		Float totalAmount = 0f;
 		Float actualPriceAfterDiscount = 0f;
