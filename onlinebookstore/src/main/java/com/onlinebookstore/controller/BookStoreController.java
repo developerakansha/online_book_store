@@ -10,6 +10,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.onlinebookstore.dto.AddBooksInStockRequestDto;
 import com.onlinebookstore.dto.ResponseDto;
 import com.onlinebookstore.dto.TotalAmountRequestDto;
+import com.onlinebookstore.entity.BookStoreEntity;
 import com.onlinebookstore.service.BookStoreService;
 
 @RestController
@@ -67,6 +69,16 @@ public class BookStoreController {
 		ResponseDto responseDto = null; 
 		if(!StringUtils.isEmpty(isbn)) {
 			responseDto = bookStoreService.deleteBookDetailByIsbn(isbn);
+		}
+		return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
+	}
+	
+	@PatchMapping(value = "/updateBookDetailByIsbn")
+	public ResponseEntity<Object> updateBookDetailByIsbn(@RequestBody BookStoreEntity request) {
+		logger.info("BookStoreController :: updateBookDetailByIsbn() execution started");
+		ResponseDto responseDto = null; 
+		if(!ObjectUtils.isEmpty(request)) {
+			responseDto = bookStoreService.updateBookDetailByIsbn(request);
 		}
 		return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
 	}

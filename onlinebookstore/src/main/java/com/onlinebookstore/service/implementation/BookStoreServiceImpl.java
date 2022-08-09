@@ -12,6 +12,7 @@ import com.onlinebookstore.dto.AddBooksInStockRequestDto;
 import com.onlinebookstore.dto.ResponseDto;
 import com.onlinebookstore.dto.TotalAmountRequestDto;
 import com.onlinebookstore.entity.BookStoreEntity;
+import com.onlinebookstore.entity.Coupon;
 import com.onlinebookstore.exception.BookStoreExcetion;
 import com.onlinebookstore.repository.BookStoreRepository;
 import com.onlinebookstore.service.BookStoreService;
@@ -106,5 +107,37 @@ public class BookStoreServiceImpl implements BookStoreService{
 		}
 		return responseDto;
 	}
+
+	@Override
+	public ResponseDto updateBookDetailByIsbn(BookStoreEntity request) {
+		ResponseDto responseDto = new ResponseDto();
+		Coupon coupon = new Coupon();
+		try {
+			BookStoreEntity bookStoreEntity = bookStoreRepository.findByIsbn(request.getIsbn());
+			if(!ObjectUtils.isEmpty(bookStoreEntity)) {
+				bookStoreEntity.setAuthor(request.getAuthor()==null?bookStoreEntity.getAuthor():request.getAuthor());
+				bookStoreEntity.setBookName(request.getBookName()==null?bookStoreEntity.getBookName():request.getBookName());
+				bookStoreEntity.setDescription(request.getDescription()==null?bookStoreEntity.getDescription():request.getDescription());
+				bookStoreEntity.setIsAvailable(request.getIsAvailable()==null?bookStoreEntity.getIsAvailable():request.getIsAvailable());
+				bookStoreEntity.setPrice(request.getPrice()==null?bookStoreEntity.getPrice():request.getPrice());
+				if(!ObjectUtils.isEmpty(request.getDiscount())) {
+					coupon.setDiscountPercentage(request.getDiscount().getDiscountPercentage());
+					bookStoreEntity.setDiscount(coupon);
+				}
+				bookStoreEntity = bookStoreRepository.save(bookStoreEntity);
+				if(!ObjectUtils.isEmpty(bookStoreEntity)) {
+					responseDto.setResponse(Constant.SUCCESS);
+					responseDto.setStatus(Constant.SUCCESS);
+					responseDto.setStatusMessage(Constant.BOOK_DETAILS_UPDATED_SUCCESSFULLY);
+					responseDto.setStatusCode(HttpStatus.OK.value());
+					return responseDto;
+				}
+			}
+		}catch (Exception e) {
+			throw new BookStoreExcetion("Uable to delete book detail's "+e);
+		}
+		return responseDto;
+	}
+
 
 }
