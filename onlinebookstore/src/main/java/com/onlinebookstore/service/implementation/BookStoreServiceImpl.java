@@ -23,7 +23,7 @@ public class BookStoreServiceImpl implements BookStoreService{
 
 	@Override
 	public ResponseDto saveBookDetails(AddBooksInStockRequestDto bookList) {
-		ResponseDto responseDto = null;
+		ResponseDto responseDto = new ResponseDto();
 		List<BookStoreEntity> list = null;
 		try {
 			if(!CollectionUtils.isEmpty(bookList.getBookList()))

@@ -17,7 +17,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "BOOK_DTLS" ,schema = "OnlineBookStore")
 @AllArgsConstructor
 @NoArgsConstructor

@@ -35,10 +35,5 @@ public class Coupon {
 			return true;
 		return false;
 	}
-	public void setDiscount(boolean isDiscount) {
-		this.isDiscount = isDiscount;
-	}
-	
-	
 }
 
