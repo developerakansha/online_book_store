@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.onlinebookstore.dto.AddBooksInStockRequestDto;
 import com.onlinebookstore.dto.ResponseDto;
@@ -17,7 +18,7 @@ import com.onlinebookstore.service.BookStoreService;
 import com.onlinebookstore.utility.Constant;
 @Service
 public class BookStoreServiceImpl implements BookStoreService{
-	
+
 	@Autowired
 	private BookStoreRepository bookStoreRepository;
 
@@ -27,7 +28,7 @@ public class BookStoreServiceImpl implements BookStoreService{
 		List<BookStoreEntity> list = null;
 		try {
 			if(!CollectionUtils.isEmpty(bookList.getBookList()))
-			list = bookStoreRepository.saveAll(bookList.getBookList());
+				list = bookStoreRepository.saveAll(bookList.getBookList());
 			responseDto.setResponse(list);
 			responseDto.setStatus(Constant.SUCCESS);
 			responseDto.setStatusMessage(Constant.SAVED_BOOKS_SUCCESSFULLY);
@@ -41,24 +42,69 @@ public class BookStoreServiceImpl implements BookStoreService{
 
 	@Override
 	public ResponseDto totalAmountForBooks(TotalAmountRequestDto request) {
+		ResponseDto responseDto = new ResponseDto();
 		List<BookStoreEntity> list = null;
-		list = null;//bookStoreRepository.findByISBNCode(request.getIsbn());
+		try {
+			list = bookStoreRepository.findAllByIsbn(request.getIsbn());
+		}catch (Exception e) {
+			throw new BookStoreExcetion("Uable to find detail's "+e);
+		}
 		int discount = 0;
 		Float totalAmount = 0f;
 		Float actualPriceAfterDiscount = 0f;
 		Float price = 0f;
-		for(BookStoreEntity book : list) {
-			price = book.getPrice();
-			if(book.getDiscount().isDiscount()) {
-				discount = book.getDiscount().getDiscount();
-				actualPriceAfterDiscount = price - (((price)/100)*discount);
-				totalAmount+=actualPriceAfterDiscount;
+		if(!CollectionUtils.isEmpty(list)) {
+			for(BookStoreEntity book : list) {
+				price = book.getPrice();
+				if(book.getDiscount().isDiscount()) {
+					discount = book.getDiscount().getDiscountPercentage();
+					actualPriceAfterDiscount = price - (((price)/100)*discount);
+					totalAmount+=actualPriceAfterDiscount;
+				}
 			}
 		}
-		
-		
-		
-		return null;
+		responseDto.setResponse(totalAmount);
+		responseDto.setStatus(Constant.SUCCESS);
+		responseDto.setStatusMessage(Constant.TOTAL_PAYABLE_AMOUNT);
+		responseDto.setStatusCode(HttpStatus.OK.value());
+		return responseDto;
+	}
+
+	@Override
+	public ResponseDto getBookDetailByIsbn(String isbn) {
+		ResponseDto responseDto = new ResponseDto();
+		BookStoreEntity bookStoreEntity = null;
+		try {
+			bookStoreEntity = bookStoreRepository.findByIsbn(isbn);
+			if(!ObjectUtils.isEmpty(bookStoreEntity)) {
+				responseDto.setResponse(bookStoreEntity);
+				responseDto.setStatus(Constant.SUCCESS);
+				responseDto.setStatusMessage(Constant.BOOK_DETAILS_FETCHED_SUCCESSFULLY);
+				responseDto.setStatusCode(HttpStatus.OK.value());
+				return responseDto;
+			}
+		}catch (Exception e) {
+			throw new BookStoreExcetion("Uable to find detail's "+e);
+		}
+		return responseDto;
+	}
+
+	@Override
+	public ResponseDto deleteBookDetailByIsbn(String isbn) {
+		ResponseDto responseDto = new ResponseDto();
+		try {
+			Integer response =bookStoreRepository.updateByIsbn(isbn);
+			if(response==1) {
+				responseDto.setResponse(Constant.SUCCESS);
+				responseDto.setStatus(Constant.SUCCESS);
+				responseDto.setStatusMessage(Constant.BOOK_DETAILS_DELETED_SUCCESSFULLY);
+				responseDto.setStatusCode(HttpStatus.OK.value());
+				return responseDto;
+			}
+		}catch (Exception e) {
+			throw new BookStoreExcetion("Uable to delete book detail's "+e);
+		}
+		return responseDto;
 	}
 
 }

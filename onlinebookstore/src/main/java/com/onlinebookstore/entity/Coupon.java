@@ -11,11 +11,12 @@ import javax.persistence.Transient;
 public class Coupon {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
-	@Column(name = "DISCOUNT")
-	private int discount;
+	@Column(name = "DISCOUNT_PERCENTAGE")
+	private int discountPercentage;
+	
 	@Transient
 	private boolean isDiscount;
 	public Long getId() {
@@ -24,14 +25,15 @@ public class Coupon {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public int getDiscount() {
-		return discount;
+	
+	public int getDiscountPercentage() {
+		return discountPercentage;
 	}
-	public void setDiscount(int discount) {
-		this.discount = discount;
+	public void setDiscountPercentage(int discountPercentage) {
+		this.discountPercentage = discountPercentage;
 	}
 	public boolean isDiscount() {
-		if(this.discount!=0)
+		if(this.discountPercentage!=0)
 			return true;
 		return false;
 	}

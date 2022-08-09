@@ -13,11 +13,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "BOOK_DTLS" ,schema = "OnlineBookStore")
+@Table(name = "BOOK_DTLS" ,schema = "onlinebookstore")
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookStoreEntity implements Serializable {
@@ -52,6 +51,9 @@ public class BookStoreEntity implements Serializable {
 	
 	@OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
 	private Coupon discount;
+	
+	@Column(name = "is_available")
+	private Boolean isAvailable=true;
 
 	public Long getBookId() {
 		return bookId;
@@ -116,6 +118,16 @@ public class BookStoreEntity implements Serializable {
 	public void setDiscount(Coupon discount) {
 		this.discount = discount;
 	}
+
+	public Boolean getIsAvailable() {
+		return isAvailable;
+	}
+
+	public void setIsAvailable(Boolean isAvailable) {
+		this.isAvailable = isAvailable;
+	}
+	
+	
 	
 	
 }
