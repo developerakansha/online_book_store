@@ -11,13 +11,15 @@ import javax.persistence.Transient;
 public class Coupon {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
 	@Column(name = "DISCOUNT")
 	private int discount;
 	@Transient
 	private boolean isDiscount;
+	@Column(name = "BOOK_TYPE")
+	private String type;
 	public Long getId() {
 		return id;
 	}

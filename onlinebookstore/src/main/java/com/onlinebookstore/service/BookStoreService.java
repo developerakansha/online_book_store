@@ -11,4 +11,8 @@ public interface BookStoreService {
 
 	ResponseDto totalAmountForBooks(TotalAmountRequestDto request);
 
+	ResponseDto getBookDetailByIsbn(String isbn);
+
+	ResponseDto deleteBookDetailByIsbn(String isbn);
+
 }
