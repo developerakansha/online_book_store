@@ -50,7 +50,6 @@ public class BookStoreEntity implements Serializable {
 	@Column(name = "ISBN" , unique = true)
 	private String isbn;
 	
-	@Transient
 	@OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
 	private Coupon discount;
 	
